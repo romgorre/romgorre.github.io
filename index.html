@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0C1024">
+<meta name="description" content="Portfolio Data Analyst de Romain Gorré — projets Python, SQL, KNIME et Power BI.">
+<title>Romain Gorré — Portfolio Data Analyst</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#12172B;
+  --ink-soft:#4E5568;
+  --ink-faint:#8992A6;
+  --paper:#EEF1F7;
+  --surface:#FFFFFF;
+  --line:#DEE3ED;
+  --line-soft:#EAEDF4;
+  --header-a:#0C1024;
+  --header-b:#202A5C;
+
+  --py:#2D7DD2;      --py-soft:#E8F1FB;
+  --sql:#C6841A;     --sql-soft:#FBF0DC;
+  --knime:#7C5CBF;   --knime-soft:#F1ECFA;
+  --pbi:#17966F;     --pbi-soft:#E3F5EF;
+
+  --radius:16px;
+  --shadow:0 10px 30px rgba(18,23,43,.07);
+  --shadow-lift:0 16px 40px rgba(18,23,43,.12);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height:1.5;
+}
+h1,h2,h3,h4{
+  font-family:'Space Grotesk', 'Inter', sans-serif;
+  color:var(--ink);
+  margin:0;
+}
+.mono{font-family:'JetBrains Mono', 'Courier New', monospace;}
+a{color:inherit;}
+button{font-family:inherit;}
+
+/* ============ TOP NAV ============ */
+.topnav{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:18px; padding:16px 32px; row-gap:10px; flex-wrap:wrap;
+  background-image:
+    radial-gradient(rgba(255,255,255,.09) 1px, transparent 1px),
+    linear-gradient(120deg, var(--header-a), var(--header-b));
+  background-size:16px 16px, 100% 100%;
+  box-shadow:0 4px 24px rgba(4,6,20,.25);
+}
+.brand{display:flex; align-items:center; gap:10px; color:#fff;}
+.brand-mark{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:.82rem;
+  letter-spacing:.03em; background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.28); padding:5px 8px; border-radius:8px;
+}
+.brand-name{font-weight:600; font-size:1.05rem;}
+.nav-links{display:flex; gap:2px; flex-wrap:wrap;}
+.nav-link{
+  --accent:#AEB6CC;
+  display:flex; align-items:center; gap:8px;
+  background:none; border:none; border-radius:9px; cursor:pointer;
+  color:rgba(255,255,255,.75); font-weight:500; font-size:.92rem;
+  padding:9px 14px; transition:background .18s, color .18s;
+}
+.nav-link .dot{width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 0 transparent; transition:box-shadow .18s;}
+.nav-link:hover{color:#fff; background:rgba(255,255,255,.08);}
+.nav-link.active{color:#fff; background:rgba(255,255,255,.14);}
+.nav-link.active .dot{box-shadow:0 0 0 4px rgba(255,255,255,.18);}
+.nav-link[data-tool="python"]{--accent:var(--py);}
+.nav-link[data-tool="sql"]{--accent:var(--sql);}
+.nav-link[data-tool="knime"]{--accent:var(--knime);}
+.nav-link[data-tool="powerbi"]{--accent:var(--pbi);}
+
+/* ============ LAYOUT ============ */
+main{max-width:980px; margin:0 auto; padding:0 32px 90px;}
+.page{display:none;}
+.page.active{display:block; animation:fadein .4s ease;}
+@keyframes fadein{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+/* ============ HERO (accueil) ============ */
+.hero{padding:56px 0 8px; max-width:760px;}
+.profile-pic{
+  width:120px;
+  height:120px;
+  object-fit:cover;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.eyebrow{
+  color:var(--ink-faint); text-transform:uppercase; letter-spacing:.14em;
+  font-size:.74rem; margin:0 0 16px;
+}
+.hero h1{font-size:clamp(2.1rem, 5vw, 3.2rem); letter-spacing:-.01em; margin-bottom:8px;}
+.hero-role{
+  font-family:'Space Grotesk'; font-weight:500; font-size:1.1rem;
+  color:var(--ink-soft); margin:0 0 22px;
+}
+.hero-lead{font-size:1.02rem; color:var(--ink-soft); max-width:66ch; margin:0 0 14px;}
+
+.toolkit-legend{display:flex; gap:10px; flex-wrap:wrap; margin:26px 0 6px;}
+.chip{
+  --accent:#8992A6;
+  display:flex; align-items:center; gap:8px;
+  border:1.5px solid var(--line); background:var(--surface);
+  border-radius:999px; padding:9px 16px; cursor:pointer;
+  font-family:'Space Grotesk'; font-weight:600; font-size:.9rem; color:var(--ink);
+  transition:border-color .18s, color .18s, box-shadow .18s;
+}
+.chip .dot{width:8px; height:8px; border-radius:50%; background:var(--accent);}
+.chip:hover{border-color:var(--accent); color:var(--accent); box-shadow:var(--shadow);}
+.chip[data-tool="python"]{--accent:var(--py);}
+.chip[data-tool="sql"]{--accent:var(--sql);}
+.chip[data-tool="knime"]{--accent:var(--knime);}
+.chip[data-tool="powerbi"]{--accent:var(--pbi);}
+
+.stats-row{
+  display:flex; gap:36px; flex-wrap:wrap;
+  margin-top:34px; padding-top:26px; border-top:1px solid var(--line);
+}
+.stat-num{font-family:'Space Grotesk'; font-weight:700; font-size:1.6rem;}
+.stat-label{
+  font-family:'JetBrains Mono'; font-size:.68rem; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--ink-faint); margin-top:2px;
+}
+
+/* ============ PAGE HEAD (per tool) ============ */
+.page-head{padding:44px 0 8px;}
+.page-badge{
+  font-family:'JetBrains Mono'; font-size:.72rem; font-weight:600;
+  letter-spacing:.06em; color:var(--accent); margin-bottom:8px; display:block;
+}
+.page-head h2{font-size:1.7rem; margin-bottom:8px;}
+.page-blurb{color:var(--ink-soft); max-width:62ch; margin-bottom:0;}
+
+/* ============ SUBNAV PILLS ============ */
+.subnav{display:flex; gap:10px; flex-wrap:wrap; margin:26px 0 26px;}
+.pill{
+  font-family:'Space Grotesk'; font-weight:600; font-size:.9rem;
+  padding:10px 18px; border-radius:999px; border:1.5px solid var(--line);
+  background:var(--surface); color:var(--ink-soft); cursor:pointer; transition:.18s;
+}
+.pill.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+.pill:hover:not(.active){border-color:var(--accent); color:var(--accent);}
+.subpage{display:none;}
+.subpage.active{display:block; animation:fadein .35s ease;}
+
+/* ============ FICHE (flagship project) ============ */
+.fiche{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden; margin-bottom:36px;
+}
+.fiche-head{
+  padding:26px 30px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  border-bottom:1px solid var(--line-soft);
+  background:linear-gradient(180deg, var(--accent-soft), transparent 130%);
+}
+.badge{
+  font-family:'JetBrains Mono'; font-size:.72rem; font-weight:600; letter-spacing:.06em;
+  background:var(--accent); color:#fff; padding:5px 10px; border-radius:7px; white-space:nowrap;
+}
+.fiche-head h3{font-size:1.4rem;}
+.fiche-client{color:var(--ink-faint); font-weight:400; font-size:1rem; font-family:'Inter';}
+
+.fiche-row{
+  display:grid; grid-template-columns:180px 1fr; gap:22px;
+  padding:22px 30px; border-bottom:1px solid var(--line-soft);
+}
+.fiche-row:last-child{border-bottom:none;}
+.fiche-label{
+  font-family:'JetBrains Mono'; font-size:.76rem; letter-spacing:.03em;
+  text-transform:uppercase; color:var(--accent); padding-top:2px;
+}
+.fiche-body p{margin:0 0 12px; color:var(--ink-soft);}
+.fiche-body p:last-child{margin-bottom:0;}
+.fiche-body ul{margin:0; padding-left:1.15em; color:var(--ink-soft);}
+.fiche-body li{margin-bottom:7px;}
+.fiche-body li:last-child{margin-bottom:0;}
+.fiche-body strong{color:var(--ink);}
+
+.table-wrap{overflow-x:auto; margin:6px 0 16px; border:1px solid var(--line-soft); border-radius:10px;}
+.table-wrap:last-child{margin-bottom:0;}
+table{border-collapse:collapse; width:100%; font-size:.87rem; min-width:420px;}
+th{
+  background:var(--accent-soft); color:var(--ink); text-align:left; padding:10px 14px;
+  font-family:'JetBrains Mono'; font-size:.68rem; text-transform:uppercase; letter-spacing:.03em;
+  border-bottom:2px solid var(--accent); white-space:nowrap;
+}
+td{padding:10px 14px; border-bottom:1px solid var(--line-soft); color:var(--ink-soft);}
+tr:last-child td{border-bottom:none;}
+tr:nth-child(even) td{background:rgba(18,23,43,.015);}
+
+/* ============ AUTRES PROJETS (accordion / card) ============ */
+.autres-heading{font-size:1.05rem; margin-bottom:16px; color:var(--ink-soft); font-weight:600;}
+.autre-card{
+  background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--accent);
+  border-radius:10px; margin-bottom:14px; overflow:hidden;
+}
+.autre-head{
+  cursor:pointer; padding:16px 20px; margin:0; list-style:none;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  font-family:'Space Grotesk'; font-weight:600; font-size:1rem; color:var(--ink);
+}
+summary.autre-head::-webkit-details-marker{display:none;}
+summary.autre-head::after{
+  content:'+'; font-family:'JetBrains Mono'; color:var(--accent); font-size:1.25rem;
+  transition:transform .2s; flex-shrink:0;
+}
+.autre-card[open] summary.autre-head::after{transform:rotate(45deg);}
+h4.autre-head{cursor:default;}
+
+.mini-fiche{margin:0; padding:0 20px 18px; display:grid; grid-template-columns:118px 1fr; gap:8px 16px;}
+.mini-fiche dt{
+  font-family:'JetBrains Mono'; font-size:.7rem; letter-spacing:.03em; text-transform:uppercase;
+  color:var(--accent); padding-top:2px;
+}
+.mini-fiche dd{margin:0 0 4px; color:var(--ink-soft); font-size:.92rem;}
+
+/* ============ LIENS DOCUMENTS PROJET ============ */
+
+.project-links{
+  display:flex;
+  flex-direction:row;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:20px;
+  align-items:center;
+}
+
+.project-links a{
+  text-decoration:none;
+}
+
+/* ============ FOOTER ============ */
+.site-footer{
+  text-align:center; padding:28px 20px 40px; color:var(--ink-faint);
+  font-size:.85rem; border-top:1px solid var(--line);
+}
+
+/* ============ ACCENT SCOPES PER TOOL PAGE ============ */
+#page-python{--accent:var(--py); --accent-soft:var(--py-soft);}
+#page-sql{--accent:var(--sql); --accent-soft:var(--sql-soft);}
+#page-knime{--accent:var(--knime); --accent-soft:var(--knime-soft);}
+#page-powerbi{--accent:var(--pbi); --accent-soft:var(--pbi-soft);}
+
+/* ============ FOCUS / A11Y ============ */
+button:focus-visible{outline:2px solid var(--accent, #2D7DD2); outline-offset:2px;}
+details summary{outline-offset:4px;}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:720px){
+  .topnav{padding:14px 18px;}
+  main{padding:0 18px 70px;}
+  .fiche-row{grid-template-columns:1fr; gap:6px;}
+  .fiche-label{padding-top:0;}
+  .fiche-head, .fiche-row{padding-left:20px; padding-right:20px;}
+  .mini-fiche{grid-template-columns:1fr; gap:2px;}
+  .mini-fiche dd{margin-bottom:12px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .page.active, .subpage.active{animation:none;}
+  *{transition:none !important;}
+}
+</style>
+</head>
+
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <span class="brand-mark">RG</span>
+    <span class="brand-name">Romain Gorré</span>
+  </div>
+  <div class="nav-links">
+    <button type="button" class="nav-link active" data-tool="accueil" onclick="showPage('accueil')">Accueil</button>
+    <button type="button" class="nav-link" data-tool="python" onclick="showPage('python')"><span class="dot"></span>Python</button>
+    <button type="button" class="nav-link" data-tool="sql" onclick="showPage('sql')"><span class="dot"></span>SQL</button>
+    <button type="button" class="nav-link" data-tool="knime" onclick="showPage('knime')"><span class="dot"></span>KNIME</button>
+    <button type="button" class="nav-link" data-tool="powerbi" onclick="showPage('powerbi')"><span class="dot"></span>Power BI</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ================= ACCUEIL ================= -->
+  <section class="page active" id="page-accueil">
+    <div class="hero">
+      <p class="eyebrow mono">Portfolio — Data Analyst</p>
+        <img src="Gemini_Generated_Image_jnj4g5jnj4g5jnj4.png" alt="Photo de profil" class="profile-pic">
+      <h1>Romain Gorré</h1>
+      <p class="hero-role">Data Analyst en alternance chez Orange Business</p>
+      <p class="hero-lead">
+        En dernière année du titre RNCP niveau 6 Data Analyst (OpenClassrooms / CFA Orange),
+        j'ai l'habitude de travailler sur des jeux de données complexes — nettoyage, modélisation,
+        jointures, agrégations, data visualisation — pour construire des analyses et des tableaux
+        de bord qui orientent des décisions concrètes.
+      </p>
+        <h2 style="margin-bottom:16px;">Parcours</h2>
+        <p><strong>Orange Business</strong> — Data Analyst (alternance) — 09/2024 → 09/2026</p>
+        <p><strong>CGI</strong> — Analyste Support (alternance) — 09/2023 → 08/2024</p>
+        <h2 style="margin-bottom:16px;">Formations</h2>
+        <p><strong>CFA Orange (OpenClassrooms)</strong> — Titre RNCP niveau 6, Data Analyst — 09/2024 → 09/2026</p>
+        <p><strong>IUT Vannes / Lannion</strong> — B.U.T. Informatique, parcours Administration, gestion et exploitation des données — 2021 → 2024</p>
+        <h2 style="margin-bottom:16px;">Compétences clés</h2>
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr><td>Analyser et traiter les données</td></tr>
+                <tr><td>Réaliser des tableaux de bord décisionnels</td></tr>
+                <tr><td>Détecter des anomalies</td></tr>
+                <tr><td>Communiquer avec les clients</td></tr>
+                <tr><td>Travailler en équipe (Agile, Scrum, SAFe)</td></tr>
+                <tr><td>Anglais professionnel</td></tr>
+              </tbody>
+            </table>
+          </div>
+        <h2 style="margin-bottom:16px;">Outils et langages</h2>
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <td><strong>Bases de données</strong></td>
+                  <td>SQL, PostgreSQL, Oracle, MongoDB, Hive</td>
+                </tr>
+                <tr>
+                  <td><strong>MSBI</strong></td>
+                  <td>Power BI, cube SSAS, DAX Studio, Tabular Editor 2, SSMS</td>
+                </tr>
+                <tr>
+                  <td><strong>Python</strong></td>
+                  <td>Analyse de données, manipulation de datasets, visualisation</td>
+                </tr>
+                <tr>
+                  <td><strong>KNIME</strong></td>
+                  <td>Workflows d'analyse, transformation, visualisation</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      <p class="hero-lead">
+        Ce portfolio présente un projet phare par outil ci-dessous ; les sections Python et Power BI
+        proposent en plus quelques exemples supplémentaires.
+      </p>
+
+      <div class="toolkit-legend">
+        <button type="button" class="chip" data-tool="python" onclick="showPage('python')"><span class="dot"></span>Python</button>
+        <button type="button" class="chip" data-tool="sql" onclick="showPage('sql')"><span class="dot"></span>SQL</button>
+        <button type="button" class="chip" data-tool="knime" onclick="showPage('knime')"><span class="dot"></span>KNIME</button>
+        <button type="button" class="chip" data-tool="powerbi" onclick="showPage('powerbi')"><span class="dot"></span>Power BI</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Outils data</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">10</div>
+          <div class="stat-label">Projets détaillés</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">RNCP 6</div>
+          <div class="stat-label">Data Analyst — en cours</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PYTHON ================= -->
+  <section class="page" id="page-python">
+    <div class="page-head">
+      <span class="page-badge mono">PROJET PYTHON</span>
+      <h2>Python</h2>
+      <p class="page-blurb">Traitement, exploration et modélisation de données avec Python — de la détection d'anomalies au machine learning supervisé.</p>
+    </div>
+
+    <div class="subnav">
+      <button type="button" class="pill active" data-sub="oncfm" onclick="showSub('python','oncfm')">Détection de faux billets (ONCFM)</button>
+      <button type="button" class="pill" data-sub="autres" onclick="showSub('python','autres')">Autre projet Python</button>
+    </div>
+
+    <!-- Fiche phare : ONCFM -->
+    <div class="subpage active" id="python-oncfm">
+      <article class="fiche">
+        <header class="fiche-head">
+          <span class="badge">PYTHON</span>
+          <h3>Détection de faux billets <span class="fiche-client">— ONCFM</span></h3>
+        </header>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">01 · Contexte</div>
+          <div class="fiche-body">
+            <p>L'ONCFM (Organisation nationale de lutte contre le faux-monnayage) souhaite doter ses équipes de terrain d'une application de machine learning capable de prédire, à partir de mesures physiques scannées sur un billet (longueur, hauteur, marges, diagonale), s'il s'agit d'un vrai ou d'un faux billet.</p>
+            <p>L'agence européenne EMV (European Monetary Verification) recommande de tester quatre algorithmes : K-means, régression logistique, KNN et Random Forest.</p>
+            <p>Livrables attendus : un notebook d'analyse et de modélisation, un script autonome portant l'application fonctionnelle, et un support présentant les traitements réalisés, les résultats des différents algorithmes et le modèle final retenu.</p>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">02 · Données</div>
+          <div class="fiche-body">
+            <p>1 500 billets déjà scannés et étiquetés : 1 000 vrais billets et 500 faux billets. Chaque billet est décrit par six mesures physiques en millimètres, ainsi que la variable cible indiquant son authenticité :</p>
+            <div class="table-wrap">
+              <table>
+                <tr><th>Variable</th><th>Description</th></tr>
+                <tr><td>diagonal</td><td>Longueur de la diagonale du billet (mm)</td></tr>
+                <tr><td>height_left</td><td>Hauteur du billet mesurée côté gauche (mm)</td></tr>
+                <tr><td>height_right</td><td>Hauteur du billet mesurée côté droit (mm)</td></tr>
+                <tr><td>margin_low</td><td>Marge basse du billet (mm)</td></tr>
+                <tr><td>margin_up</td><td>Marge haute du billet (mm)</td></tr>
+                <tr><td>length</td><td>Longueur du billet (mm)</td></tr>
+                <tr><td>is_genuine</td><td>Variable cible : vrai billet / faux billet</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">03 · Démarche</div>
+          <div class="fiche-body">
+            <ul>
+              <li>Exploration et nettoyage : valeurs manquantes, typage des variables, vérification de la répartition des classes (1000 / 500).</li>
+              <li>Analyse univariée et bivariée des 6 variables physiques selon la classe (vrai / faux), pour repérer les variables les plus discriminantes.</li>
+              <li>Régression linéaire pour compléter les valeurs manquantes sur la variable margin_low.</li>
+              <li>Modélisation supervisée : régression logistique, KNN et Random Forest, avec split entraînement/test et validation croisée.</li>
+              <li>Comparaison des modèles sur des métriques adaptées à un enjeu de sécurité (accuracy, precision, recall, F1-score, matrice de confusion), avec une attention particulière portée aux faux négatifs — un faux billet classé « vrai » est l'erreur la plus coûteuse pour l'ONCFM.</li>
+              <li>Choix du modèle final et export dans un script Python autonome, réutilisable pour scorer de nouveaux billets à partir de leurs mesures.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">04 · Résultats</div>
+          <div class="fiche-body">
+            <div class="table-wrap">
+              <table>
+                <tr><th>Algorithme</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1-score</th></tr>
+                <tr><td>K-means</td><td>~98 %</td><td>~99 %</td><td>~99 %</td><td>~99 %</td></tr>
+                <tr><td>Régression logistique</td><td>~99 %</td><td>~99 %</td><td>~99 %</td><td>~99 %</td></tr>
+                <tr><td>KNN</td><td>~98 %</td><td>~98 %</td><td>~99 %</td><td>~98 %</td></tr>
+                <tr><td>Random Forest</td><td>~99 %</td><td>~99 %</td><td>~98 %</td><td>~98 %</td></tr>
+              </table>
+            </div>
+            <p><strong>Choix du modèle final :</strong> la régression logistique. Retenue pour son excellent compromis performance/simplicité — environ 99 % d'accuracy avec un recall élevé sur les faux billets — tout en restant interprétable et rapide à déployer en script Python pour un usage terrain en temps réel.</p>
+            <p><strong>Application fonctionnelle :</strong> une fonction Python analyse un fichier CSV contenant les caractéristiques de plusieurs billets. Le modèle prédit pour chaque billet s'il est vrai ou faux, avec un pourcentage de probabilité pour chaque cas. Les résultats sont automatiquement enregistrés dans un nouveau fichier CSV, prêt à être utilisé par les équipes métier.</p>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">05 · Limites</div>
+          <div class="fiche-body">
+            <ul>
+              <li>Déséquilibre des classes (1000 vrais / 500 faux) : à surveiller sur les algorithmes sensibles à la répartition, comme K-means ou KNN.</li>
+              <li>Échantillon de 1 500 billets à une date donnée : ne couvre pas nécessairement les techniques de contrefaçon les plus récentes.</li>
+              <li>Le modèle se fonde uniquement sur des mesures physiques : une contrefaçon reproduisant fidèlement les dimensions d'un vrai billet resterait indétectable par cette seule approche.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Autres projets Python -->
+    <div class="subpage" id="python-autres">
+      <h3 class="autres-heading">Autres projets Python</h3>
+      <div class="autres-list">
+
+        <details class="autre-card" open>
+          <summary class="autre-head">Étude de santé publique pour la FAO</summary>
+          <dl class="mini-fiche">
+            <dt>Contexte</dt><dd>Intégration d'une équipe FAO comme Data Analyst pour une étude sur l'alimentation mondiale ; volet historique 2013-2017 confié (la suite 2018+ ayant été traitée par le précédent analyste). Réalisé en Python (pandas, matplotlib, seaborn).</dd>
+            <dt>Données</dt><dd>4 fichiers CSV FAO : population, disponibilité alimentaire, aide alimentaire, sous-nutrition.</dd>
+            <dt>Démarche</dt><dd>Nettoyage et harmonisation des unités, gestion des NaN, jointures entre les 4 tables, calcul de taux et répartitions (sous-nutrition, disponibilité calorique, usages des céréales), classements de pays, étude de cas ciblée, data visualisation.</dd>
+            <dt>Résultats</dt><dd>7,10 % de la population mondiale en sous-nutrition en 2017 ; disponibilité mondiale suffisante en théorie pour nourrir 8,37 Md de personnes ; fortes disparités entre pays ; Haïti, Corée du Nord et Madagascar en tête des taux de sous-nutrition.</dd>
+            <dt>Limites</dt><dd>Chiffres de personnes « nourries » théoriques ; valeurs de sous-nutrition non numériques ramenées à 0 (léger risque de sous-estimation) ; zones dupliquées (ex. Chine) non consolidées.</dd>
+          </dl>
+        </details>
+
+        <details class="autre-card">
+          <summary class="autre-head">Analyse des ventes chez BottleNeck</summary>
+          <dl class="mini-fiche">
+            <dt>Contexte</dt><dd>Intégration comme Data Analyst chez BottleNeck, négociant en vin, pour fiabiliser des outils de suivi jusque-là artisanaux et présenter les résultats au CODIR. Réalisé via un notebook Python.</dd>
+            <dt>Données</dt><dd>3 sources à rapprocher : export ERP (référence produit, prix, état du stock), export du site web (SKU, quantités vendues, description), table de liaison entre les deux référentiels (numéros de référence différents d'un outil à l'autre). Extraction au 31/10 ; ventes du 01/10 au 31/10.</dd>
+            <dt>Démarche</dt><dd>Exploration des données des différentes sources ; jointure des fichiers ; analyse univariée et multivariée.</dd>
+            <dt>Résultats</dt><dd>Un notebook Jupyter complet sur les ventes de l'entreprise BottleNeck. L'ensemble de ces travaux, appuyés par des graphiques, aboutit à un dataset consolidé exporté sous Excel, directement exploitable par les équipes BottleNeck.</dd>
+            <dt>Limites</dt><dd>Extraction figée à une date unique (31/10) et ventes sur un seul mois, donc aucune vision de tendance ; fiabilité du rapprochement dépendante de la table de liaison elle-même.</dd>
+          </dl>
+        </details>
+
+        <details class="autre-card">
+          <summary class="autre-head">Analyse des ventes pour la librairie Lapage</summary>
+          <dl class="mini-fiche">
+            <dt>Contexte</dt><dd>Mission en tant que Data Analyst pour une librairie ayant récemment développé son activité e-commerce ; objectif : analyser les ventes et le comportement client afin d'aider à la prise de décision stratégique.</dd>
+            <dt>Données</dt><dd>Bases de données de ventes (transactions, produits, clients) fournies par l'entreprise, incluant indicateurs commerciaux et historiques d'achats.</dd>
+            <dt>Démarche</dt><dd>Exploration des données, calcul des KPI (chiffre d'affaires, volumes, panier moyen), analyse des corrélations, segmentation des clients, statistiques descriptives et visualisations (Python : pandas, matplotlib, seaborn).</dd>
+            <dt>Résultats</dt><dd>Identification des produits les plus performants, mise en évidence de comportements d'achat distincts selon les segments clients, insights sur les corrélations entre variables (ex. lien entre fréquence d'achat et panier moyen).</dd>
+            <dt>Limites</dt><dd>Données déjà partiellement nettoyées (moins de travail de préparation), analyses dépendantes de la qualité des données sources, absence de variables externes (marketing, saisonnalité fine).</dd>
+          </dl>
+        </details>
+
+        <details class="autre-card">
+          <summary class="autre-head">Ciblage de pays à l'export pour La Poule qui chante</summary>
+          <dl class="mini-fiche">
+            <dt>Contexte</dt><dd>Mission chez La Poule qui chante, entreprise agroalimentaire française (élevage et vente de poulets sous label Agriculture Biologique), activité 100 % franco-française à ce stade. Le PDG souhaite étudier une expansion à l'international sans cibler a priori de pays ou continent. Objectif : proposer des groupements de pays à cibler pour l'export, en amont d'une étude de marché plus poussée. Autonomie complète sur le choix des données et du langage (Python retenu).</dd>
+            <dt>Données</dt><dd>Données FAO en point de départ, enrichies via une analyse PESTEL d'au moins 8 nouvelles variables (open data FAO, Banque mondiale, données mondiales), regroupées en un seul jeu de données. Cible : au moins 100 pays couvrant au moins 60 % de la population mondiale.</dd>
+            <dt>Démarche</dt><dd>Préparation/nettoyage et fusion des sources multiples, exploration dans un premier notebook, puis un second notebook analytique : ACP avec réduction de dimensions (cercle des corrélations, projection des individus), puis classification des pays (classification ascendante hiérarchique, puis k-means) à partir des données de l'ACP ou des données brutes.</dd>
+            <dt>Résultats</dt><dd>L'ACP fait ressortir les principaux axes de différenciation entre pays sur les variables retenues (FAO + PESTEL). La classification (CAH puis k-means) regroupe ensuite les pays en segments de profils comparables, permettant d'identifier le ou les groupes de pays présentant le potentiel le plus favorable pour l'export de poulet biologique, en amont de l'étude de marché approfondie.</dd>
+            <dt>Limites</dt><dd>Les variables PESTEL retenues et le seuil des 100 pays/60 % de la population influencent directement la composition des clusters ; sources multiples pas toujours harmonisées entre elles (années, méthodologies) ; résultat = un filtre statistique préliminaire, pas une étude de marché à lui seul.</dd>
+          </dl>
+        </details>
+
+        <details class="autre-card">
+          <summary class="autre-head">Amélioration de l'analyse des ventes chez BottleNeck (IA)</summary>
+
+          <dl class="mini-fiche">
+            <dt>Contexte</dt>
+            <dd>Idem au projet BottleNeck initial (fiabiliser le suivi des ventes et présenter au CODIR), mais avec l'objectif de moderniser l'analyse existante en y intégrant l'IA de manière critique et documentée.</dd>
+
+            <dt>Données</dt>
+            <dd>Identiques au projet initial (3 sources : ERP, site web, table de liaison). Focus supplémentaire sur la conformité RGPD, la sécurité et la qualité des données.</dd>
+
+            <dt>Démarche</dt>
+            <dd>Veille technologique pour comparer plusieurs options (outils, librairies, assistants IA) selon des critères précis (temps, qualité, reproductibilité) ; cahier des charges ; gestion de projet agile (backlog, risques) ; documentation complète du projet avec l'ajout de la partie IA ; optimisation du nettoyage et des analyses via des prompts IA testés et comparés ; intégration de Machine Learning.</dd>
+
+            <dt>Résultats</dt>
+            <dd>Notebook Python repensé et optimisé, accompagné d'une documentation complète traçant les essais IA (prompts retenus/écartés, justifications) et l'impact métier, facilitant la prise en main par les équipes.</dd>
+
+            <dt>Limites</dt>
+            <dd>Analyse toujours dépendante de l'historique de données disponible ; besoin d'une automatisation continue (pipeline de données) pour éviter les traitements manuels à l'avenir.</dd>
+          </dl>
+
+        <div class="project-links">
+          <a href="P13_Partie1_Veille.docx" target="_blank">
+            <button type="button" class="chip">
+              <span class="dot"></span>Veille technologique
+            </button>
+          </a>
+
+          <a href="P13_Partie2_CDC.docx" target="_blank">
+            <button type="button" class="chip">
+              <span class="dot"></span>Cahier des charges
+            </button>
+          </a>
+
+          <a href="P13_Partie3_GestionProjet.docx" target="_blank">
+            <button type="button" class="chip">
+              <span class="dot"></span>Gestion de projet
+            </button>
+          </a>
+
+          <a href="P13_Partie4_Documentation.docx" target="_blank">
+            <button type="button" class="chip">
+              <span class="dot"></span>Documentation
+            </button>
+          </a>
+        </div>
+
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SQL ================= -->
+  <section class="page" id="page-sql">
+    <div class="page-head">
+      <span class="page-badge mono">PROJET SQL</span>
+      <h2>SQL</h2>
+      <p class="page-blurb">Modélisation relationnelle et exploitation de bases de données avec SQL, dans le respect du RGPD.</p>
+    </div>
+
+    <article class="fiche">
+      <header class="fiche-head">
+        <span class="badge">SQL</span>
+        <h3>Créez et utilisez une base de données immobilière avec SQL <span class="fiche-client">— Laplace Immo (DATAImmo)</span></h3>
+      </header>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">01 · Contexte</div>
+        <div class="fiche-body">
+          <p>Laplace Immo, réseau national d'agences immobilières, lance un projet stratégique interne baptisé DATAImmo : construire un modèle capable de mieux prévoir le prix de vente des biens immobiliers, afin de se démarquer de la concurrence.</p>
+          <p>Ma mission, en autonomie sur la partie technique, consiste à refondre la base de données qui collecte les transactions immobilières et foncières en France, à partir de trois sources : les Demandes de valeurs foncières (DVF), les données de recensement de population de l'INSEE, et le référentiel géographique français de data.gouv. Cette base sert ensuite à analyser le marché et à aider les agences régionales à mieux accompagner leurs clients.</p>
+          <p>Livrables attendus : un dictionnaire de données complet, un schéma relationnel entre les tables, et un support présentant le contexte du projet, la conformité RGPD, les données initiales, le dictionnaire de données, le schéma relationnel, la base de données ainsi que les requêtes réalisées.</p>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">02 · Données</div>
+        <div class="fiche-body">
+          <p>Trois sources de données publiques transmises par Clara, côté client : les Demandes de valeurs foncières (DVF, data.gouv.fr), les données de recensement de population de l'INSEE, et le référentiel géographique français de data.gouv.fr (régions, départements, communes, unités et aires urbaines, académies). Ces fichiers XLSX ont été scindés en 5 fichiers CSV, chacun correspondant à une table du schéma relationnel normalisé (3NF) :</p>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Table</th><th>Rôle</th><th>Principaux champs</th></tr>
+              <tr><td>Regions</td><td>Référentiel des régions françaises</td><td>reg_nom, regrgp_nom</td></tr>
+              <tr><td>Departements</td><td>Départements, rattachés à une région</td><td>dep_nom, dep_nom_num</td></tr>
+              <tr><td>Communes</td><td>Communes et leur population, rattachées à un département</td><td>COM, CODCOM, PTOT (population totale)</td></tr>
+              <tr><td>Biens</td><td>Caractéristiques physiques des biens immobiliers, rattachés à une commune</td><td>Voie, Surface_reelle_bati, Type_local, Nombre_pieces_principales</td></tr>
+              <tr><td>Ventes</td><td>Transactions (mutations) associées à un bien</td><td>Date_mutation, Nature_mutation, Valeur_fonciere</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">03 · Démarche</div>
+        <div class="fiche-body">
+          <ul>
+            <li>Création d'un dictionnaire des données pour documenter et comprendre les variables.</li>
+            <li>Vérification de la conformité RGPD (sélection des données pertinentes uniquement).</li>
+            <li>Conception d'un schéma relationnel normalisé (3NF) avec ajout de nouvelles tables (régions, départements, etc.).</li>
+            <li>Intégration des données dans une base SQL.</li>
+            <li>Réalisation de requêtes analytiques pour exploiter les données.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">04 · Résultats</div>
+        <div class="fiche-body">
+          <ul>
+            <li>Mise en place d'une base de données structurée et normalisée.</li>
+            <li>Intégration de données multi-sources (transactions, géographie, population).</li>
+            <li>Base conforme aux exigences RGPD.</li>
+            <li>Production de requêtes SQL permettant d'analyser le marché immobilier.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">05 · Limites</div>
+        <div class="fiche-body">
+          <ul>
+            <li>Données issues de sources différentes → risque d'hétérogénéité.</li>
+            <li>Données statiques (pas en temps réel).</li>
+            <li>Nécessité de traitements supplémentaires pour la qualité des données.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= KNIME ================= -->
+  <section class="page" id="page-knime">
+    <div class="page-head">
+      <span class="page-badge mono">PROJET KNIME</span>
+      <h2>KNIME</h2>
+      <p class="page-blurb">Automatisation de traitements de données et construction d'indicateurs avec KNIME.</p>
+    </div>
+
+    <article class="fiche">
+      <header class="fiche-head">
+        <span class="badge">KNIME</span>
+        <h3>Analysez des indicateurs de l'égalité femmes/hommes en respect du RGPD <span class="fiche-client">— Cabinet de consultants</span></h3>
+      </header>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">01 · Contexte</div>
+        <div class="fiche-body">
+          <p>En tant que data analyst dans un cabinet de consultants en transformation digitale, je suis sollicité pour automatiser le diagnostic annuel de l'égalité professionnelle femmes-hommes — une obligation légale pour toute entreprise de 50 salariés et plus.</p>
+          <p>À partir des données du SIRH (non anonymisées à l'origine), la mission consiste à construire un workflow KNIME calculant au moins 5 indicateurs choisis parmi ceux du dispositif Diagnostic Égalité du ministère du Travail, à produire un fichier CSV anonymisé réutilisable, puis à restituer les résultats avec un score d'égalité et des recommandations pour les années à venir.</p>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">02 · Données</div>
+        <div class="fiche-body">
+          <p>Export du SIRH (Système d'Informations des Ressources Humaines), fourni brut et non anonymisé — ce qui constitue le premier enjeu du projet : le rendre conforme au RGPD avant toute analyse ou diffusion :</p>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Fichier</th><th>Rôle</th><th>Principaux champs</th></tr>
+              <tr><td>Salarié</td><td>Informations personnelles sur les salariés de l'entreprise</td><td>Id_salarié, Sexe, Prénom/Nom, Téléphone, Date de naissance, Etat civil, Congé maternité, Enfants</td></tr>
+              <tr><td>Rémunération</td><td>Informations sur la rémunération de chaque salarié</td><td>Id_salarié, Contrat, Durée hebdo, Salaire base mensuel, %variable_moyen, Augmentation, Promotion</td></tr>
+              <tr><td>Info_Pro</td><td>Informations professionnelles des salariés</td><td>Id_salarié, Année d'ancienneté, Distance domicile/travail, Service, Accident de travail, Niveau de satisfaction</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">03 · Démarche</div>
+        <div class="fiche-body">
+          <ul>
+            <li>Import des données SIRH brutes dans KNIME et exploration initiale (structure, types, valeurs manquantes ou incohérentes).</li>
+            <li>Anonymisation des données à caractère personnel pour respecter le RGPD, avec une attention particulière portée à la colonne id_salarié.</li>
+            <li>Agrégation et calcul des indicateurs retenus, avec normalisation de certaines variables lorsque nécessaire (ex. salaire en équivalent temps plein), et vérification de la cohérence des données à chaque étape.</li>
+            <li>Construction des graphiques du diagnostic directement dans le workflow KNIME.</li>
+            <li>Export d'un fichier CSV propre et anonymisé.</li>
+            <li>Synthèse des résultats et rédaction des recommandations dans un support de présentation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">04 · Résultats</div>
+        <div class="fiche-body">
+          <p>Le résultat est un score de l'entreprise, calculé via un fichier Excel structuré autour de plusieurs thématiques avec un barème précis :</p>
+          <ul>
+            <li>L'écart de rémunération</li>
+            <li>L'écart d'augmentations</li>
+            <li>Le retour maternité</li>
+            <li>Les 10 plus hautes rémunérations</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fiche-row">
+        <div class="fiche-label mono">05 · Limites</div>
+        <div class="fiche-body">
+          <ul>
+            <li>Les indicateurs retenus ne couvrent qu'une partie du dispositif complet du ministère du Travail : une analyse plus exhaustive pourrait affiner le diagnostic.</li>
+            <li>Diagnostic réalisé à un instant T sur les données SIRH disponibles : une actualisation annuelle est nécessaire pour suivre l'évolution du score dans la durée.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= POWER BI ================= -->
+  <section class="page" id="page-powerbi">
+    <div class="page-head">
+      <span class="page-badge mono">PROJET POWER BI</span>
+      <h2>Power BI</h2>
+      <p class="page-blurb">Modélisation de données multi-sources et tableaux de bord décisionnels avec Power BI.</p>
+    </div>
+
+    <div class="subnav">
+      <button type="button" class="pill active" data-sub="dwfa" onclick="showSub('powerbi','dwfa')">Étude eau potable (DWFA)</button>
+      <button type="button" class="pill" data-sub="autres" onclick="showSub('powerbi','autres')">Autre projet Power BI</button>
+    </div>
+
+    <!-- Fiche phare : DWFA -->
+    <div class="subpage active" id="powerbi-dwfa">
+      <article class="fiche">
+        <header class="fiche-head">
+          <span class="badge">POWER BI</span>
+          <h3>Faites une étude sur l'eau potable <span class="fiche-client">— DWFA (Drinking Water For All)</span></h3>
+        </header>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">01 · Contexte</div>
+          <div class="fiche-body">
+            <p>L'ONG DWFA (Drinking Water For All) souhaite proposer à sa direction un outil d'aide à la décision capable d'orienter les futurs investissements d'un bailleur de fonds. L'objectif : identifier précisément les pays prioritaires rencontrant des difficultés d'accès à l'eau potable, afin d'y déployer l'un des trois domaines d'action de l'association — création de services, modernisation d'infrastructures ou conseil auprès des gouvernements.</p>
+            <p>La mission requiert la sélection d'indicateurs clés issus de l'OMS et de la FAO, structurés au sein d'un tableau de bord organisé en trois niveaux de lecture (mondial, continental et national).</p>
+            <p>Livrables attendus : le tableau de bord fonctionnel sous Power BI (.pbix) et un support de présentation détaillant le contexte, le prétraitement des données, les captures d'écran du blueprint ainsi que les choix de conception.</p>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">02 · Données</div>
+          <div class="fiche-body">
+            <p>Cinq sources issues de l'OMS et de la FAO, chacune structurée par pays et par année avec une granularité variable. Après nettoyage et transformation, ces sources ont été consolidées en un modèle de 5 tables articulées autour d'une clé concaténée (Country_Code + Year) :</p>
+            <div class="table-wrap">
+              <table>
+                <tr><th>Table</th><th>Rôle</th><th>Principaux champs</th></tr>
+                <tr><td>Region_Mapping</td><td>Rattache chaque pays à sa région géographique</td><td>Country, Region</td></tr>
+                <tr><td>Population</td><td>Population par pays/année, ventilée par genre</td><td>Female, Male, Total</td></tr>
+                <tr><td>Political_Stability</td><td>Indice de stabilité politique par pays/année</td><td>Political stability index</td></tr>
+                <tr><td>Water_Access</td><td>Accès à l'eau potable de base et sécurisée, par milieu</td><td>Rural/Urban/Total basic water (%), Rural/Urban/Total safe water (%)</td></tr>
+                <tr><td>Mortality_Rates</td><td>Mortalité liée à l'eau et à l'assainissement (WASH), par genre</td><td>Female/Male/Total mortality rate, Total WASH deaths, Gender Mortality Gap</td></tr>
+              </table>
+            </div>
+            <p>Region_Mapping fait office de dimension géographique (1 pays → plusieurs lignes dans Population), tandis que les quatre autres tables partagent la même granularité pays/année via la clé concaténée.</p>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">03 · Démarche</div>
+          <div class="fiche-body">
+            <ul>
+              <li>Exploration et nettoyage sous Python des 5 sources d'origine (structure, granularités, valeurs manquantes), harmonisation des noms de pays et regroupement des lignes correspondant à un même pays lorsque plusieurs entités coexistaient (ex. la Chine).</li>
+              <li>Restructuration sous Python : pivot des champs pour passer d'un format long à un format exploitable (ex. la population ventilée en Female/Male/Total), et ajout de colonnes calculées (ex. Gender Mortality Gap).</li>
+              <li>Finalisation sous Power Query : création d'une clé primaire concaténée (Country_Code + Year), conversion des séparateurs décimaux, correction des types, ajustements par multiplication/division.</li>
+              <li>Modélisation dans Power BI autour de cette clé concaténée, avec Region_Mapping en dimension géographique.</li>
+              <li>Construction progressive du tableau de bord, niveau par niveau : vue mondiale, puis continentale, puis nationale.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">04 · Résultats</div>
+          <div class="fiche-body">
+            <p>Le livrable final est un tableau de bord Power BI fonctionnel, structuré en trois niveaux de lecture emboîtés :</p>
+            <ul>
+              <li><strong>Vue mondiale</strong> — cartographie et classement des pays selon les indicateurs clés (accès à l'eau, mortalité liée au WASH, stabilité politique), pour une première identification des zones à risque.</li>
+              <li><strong>Vue continentale</strong> — comparaison des régions entre elles, pour situer un continent par rapport aux autres.</li>
+              <li><strong>Vue nationale</strong> — profil détaillé d'un pays (accès à l'eau par milieu urbain/rural, mortalité par genre, stabilité politique, population), pour appuyer une décision d'investissement ciblée.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="fiche-row">
+          <div class="fiche-label mono">05 · Limites</div>
+          <div class="fiche-body">
+            <ul>
+              <li>Ancienneté des données : ne reflètent pas toujours la situation la plus récente ; une mise à jour régulière des sources est nécessaire pour un usage continu.</li>
+              <li>Granularité hétérogène entre les 5 sources d'origine, ayant nécessité des choix de pivot/regroupement au niveau pays — les disparités infranationales (régions, villes) ne sont pas visibles.</li>
+              <li>Tableau de bord descriptif : il identifie des priorités par croisement d'indicateurs, mais ne modélise pas l'impact attendu d'un investissement. Piste d'amélioration : introduire un scoring ou un modèle prédictif (machine learning).</li>
+              <li>La fiabilité des indicateurs dépend de la qualité du reporting national à l'OMS/FAO, qui peut varier d'un pays à l'autre.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Autre projet Power BI : Sanitoral -->
+    <div class="subpage" id="powerbi-autres">
+      <h3 class="autres-heading">Autre projet Power BI</h3>
+      <div class="autre-card" style="border-left-color:var(--accent);">
+        <h4 class="autre-head">Tableau de bord de suivi de projets pour Sanitoral</h4>
+        <dl class="mini-fiche">
+          <dt>Contexte</dt><dd>Mission de conseil en tant que Data Analyst chez le client Sanitoral (fabricant de soins bucco-dentaires) pour construire un tableau de bord de suivi de projets (avancement, coûts, retards, performance) destiné au PMO et aux directeurs. Cadrage préalable via un Product Strategy Canvas (user stories), validé par la cheffe de projet côté client avant développement.</dd>
+          <dt>Données</dt><dd>Export du logiciel de gestion de projets du client (projets menés entre 2018 et début 2022), accompagné d'un dictionnaire de données. Modèle construit autour d'une table de planification (coûts/durées/livrables planifiés, avec un indicateur d'écart de coût > 15 %) reliée aux tables de réalisation (coûts, durées, livrables) et à des tables de référence (type de projet, localisation/pays, table de traduction FR/ANG).</dd>
+          <dt>Démarche</dt><dd>Nettoyage et préparation dans Power Query Editor, construction du modèle relationnel, puis développement du tableau de bord interactif : mesures DAX pour mettre en évidence retards et dépassements budgétaires, gestion de 3 profils utilisateurs via des filtres plutôt que des pages dédiées, storytelling pour la restitution aux directeurs.</dd>
+          <dt>Résultats</dt><dd>Le livrable final est un tableau de bord Power BI fonctionnel, structuré en plusieurs niveaux de lecture : vue globale pour le directeur général ; vue globale, vue budget, vue délais et vue livrable pour le directeur régional ; mêmes vues pour le directeur national.</dd>
+          <dt>Limites</dt><dd>Analyse bornée aux projets 2018-début 2022 (pas de données plus récentes) ; contrainte de restituer 3 profils différents ; mise à jour hebdomadaire qui dépend malgré tout du rechargement des fichiers sources par le client.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 Romain Gorré — Portfolio Data Analyst</p>
+</footer>
+
+<script>
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(function(el){
+    var active = el.getAttribute('data-tool') === id;
+    el.classList.toggle('active', active);
+    if(active){ el.setAttribute('aria-current','page'); } else { el.removeAttribute('aria-current'); }
+  });
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top:0, behavior: reduce ? 'auto' : 'smooth' });
+}
+
+function showSub(page, id){
+  var parent = document.getElementById('page-' + page);
+  parent.querySelectorAll('.subpage').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById(page + '-' + id).classList.add('active');
+  parent.querySelectorAll('.pill').forEach(function(el){
+    el.classList.toggle('active', el.getAttribute('data-sub') === id);
+  });
+}
+</script>
+
+</body>
+</html>
